@@ -5,29 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+      integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
   <body>
     <div
-      class="mainContainer bg-[#282870] flex justify-center items-center justify-center h-screen"
+      class="mainContainer bg-[#282870] flex justify-center items-center justify-center h-screen m-2"
     >
-      <div class="title w-[300px] h-[200px] bg-white">
-        <h1>TO-Do List</h1>
-        <div class="input">
-          <input id="input" type="text" placeholder="enter task here" />
+      <div class="bg-white p-4 rounded-lg shadow-lg w-96">
+        <h1 class="text-xl font-bold">To-Do List 📓</h1>
+        <div class="input p-4 relative">
+          <input
+            id="input"
+            class="p-2 px-4 bg-gray-100 rounded-full w-[300px] absolute left-0"
+            type="text"
+            placeholder="Add task here"
+          />
         </div>
-        <div class="addBtn">
-          <button id="addBtn" class="bg-[#ff5845] px-4 py-2 rounded-full">
+        <div class="addBtn relative">
+          <button
+            id="addBtn"
+            class="bg-[#ff5845] px-4 py-2 rounded-full absolute right-5 -bottom-6 text-white"
+          >
             Add
           </button>
         </div>
-        <div>
-          <ul id="taskList">
-            <li>task1</li>
+        <div class="p-4">
+          <ul id="taskList" class="py-6">
+            <li class="flex justify-between">
+              <div>
+                <input type="checkbox" /> <span class="ml-2">task1</span>
+              </div>
+
+              <button><i class="fa-solid fa-trash"></i></button>
+            </li>
             <li>task2</li>
             <li>task3</li>
           </ul>
         </div>
       </div>
     </div>
+    <script>
+      let inputElement = document.getElementById("input");
+      let addBtnElement = document.getElementById("addBtn");
+
+      let id = window.crypto.randomUUID();
+      addBtnElement.addEventListener("click", addToDo);
+      
+      function addToDo() {
+        console.log(inputElement.value);
+        let todo = {
+          id: id,
+          text: inputElement.value,
+          completed: false,
+        };
+        let todos = [];
+        let avialbleTodo = localStorage.getItem("todos");
+        if (avialbleTodo != null) {
+          avialbleTodo = JSON.parse(avialbleTodo);
+          todos = [...avialbleTodo, todo];
+        } else {
+          todos = [todo];
+        }
+        localStorage.setItem("todos", JSON.stringify(todos));
+        inputElement.value = "";
+      }
+    </script>
   </body>
 </html>
