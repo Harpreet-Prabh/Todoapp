@@ -36,29 +36,24 @@
           </button>
         </div>
         <div class="p-4">
-          <ul id="taskList" class="py-6">
-            <li class="flex justify-between">
-              <div>
-                <input type="checkbox" /> <span class="ml-2">task1</span>
-              </div>
-
-              <button><i class="fa-solid fa-trash"></i></button>
-            </li>
-            <li>task2</li>
-            <li>task3</li>
-          </ul>
+          <ul id="taskList" class="py-6"></ul>
         </div>
       </div>
     </div>
     <script>
       let inputElement = document.getElementById("input");
       let addBtnElement = document.getElementById("addBtn");
+      let tasklistElement = document.getElementById("taskList");
 
       let id = window.crypto.randomUUID();
       addBtnElement.addEventListener("click", addToDo);
-      
+
       function addToDo() {
         console.log(inputElement.value);
+        if (inputElement.value == "") {
+          alert("input is required");
+          return;
+        }
         let todo = {
           id: id,
           text: inputElement.value,
@@ -73,8 +68,39 @@
           todos = [todo];
         }
         localStorage.setItem("todos", JSON.stringify(todos));
+        //listElement = inputElement.value;
         inputElement.value = "";
+        display();
       }
+
+      function display() {
+        let todos = localStorage.getItem("todos");
+        todos = JSON.parse(todos);
+        console.log(todos);
+        let todosHtml = "";
+        todos.forEach((todo) => {
+          todosHtml += `<li class="flex justify-between">
+              <div>
+                <input type="checkbox" ${
+                  todo.completed && "checked"
+                } /> <span class="ml-2  ${todo.completed && "line-through"}">${
+            todo.text
+          }</span>
+              </div>
+
+              <button><i class="fa-solid fa-trash"></i></button>
+            </li>`;
+        });
+        tasklistElement.innerHTML = todosHtml;
+        let checkboxes = document.querySelectorAll("input[type=checkbox]");
+        console.log(checkboxes);
+        checkboxes.forEach((element) => {
+          element.addEventListener("change", () => {
+            console.log("done");
+          });
+        });
+      }
+      display();
     </script>
   </body>
 </html>
