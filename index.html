@@ -81,9 +81,9 @@
         todos.forEach((todo) => {
           todosHtml += `<li class="flex justify-between">
               <div>
-                <input type="checkbox" ${
-                  todo.completed && "checked"
-                } /> <span class="ml-2  ${todo.completed && "line-through"}">${
+                <input data-id="${todo.id}" type="checkbox" ${
+            todo.completed && "checked"
+          } /> <span class="ml-2  ${todo.completed && "line-through"}">${
             todo.text
           }</span>
               </div>
@@ -96,11 +96,25 @@
         console.log(checkboxes);
         checkboxes.forEach((element) => {
           element.addEventListener("change", () => {
-            console.log("done");
+            console.log(element.checked);
+            let elementId = element.getAttribute("data-id");
+            console.log(elementId);
+            toggle(elementId, element.checked);
           });
         });
       }
       display();
+      function toggle(id, status) {
+        let todos = localStorage.getItem("todos");
+        todos = JSON.parse(todos);
+        let updatedtodos = todos.map((todo) => {
+          if (todo.id == id) {
+            return { ...todo, completed: status }; ///use traverse
+          }
+          return todo;
+        });
+        localStorage.setItem("todos", JSON.stringify(updatedtodos));
+      }
     </script>
   </body>
 </html>
