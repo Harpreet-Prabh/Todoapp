@@ -45,15 +45,14 @@
       let addBtnElement = document.getElementById("addBtn");
       let tasklistElement = document.getElementById("taskList");
 
-      let id = window.crypto.randomUUID();
       addBtnElement.addEventListener("click", addToDo);
 
       function addToDo() {
-        console.log(inputElement.value);
         if (inputElement.value == "") {
           alert("input is required");
           return;
         }
+        let id = window.crypto.randomUUID();
         let todo = {
           id: id,
           text: inputElement.value,
@@ -68,7 +67,7 @@
           todos = [todo];
         }
         localStorage.setItem("todos", JSON.stringify(todos));
-        //listElement = inputElement.value;
+
         inputElement.value = "";
         display();
       }
@@ -76,7 +75,7 @@
       function display() {
         let todos = localStorage.getItem("todos");
         todos = JSON.parse(todos);
-        console.log(todos);
+
         let todosHtml = "";
         todos.forEach((todo) => {
           todosHtml += `<li class="flex justify-between">
@@ -87,22 +86,90 @@
             todo.text
           }</span>
               </div>
-
-              <button><i class="fa-solid fa-trash"></i></button>
+              <div><button class="edit" data-id="${
+                todo.id
+              }"><i class="fa-solid fa-pen-to-square" style="color: #685997;"></i></button> <button class="trash" data-id="${
+            todo.id
+          }" ><i class="fa-solid fa-trash" style="color: #df2b0c"></i></button></div>
+             
             </li>`;
         });
         tasklistElement.innerHTML = todosHtml;
+        checkboxEventsHandler();
+        trashEventHandler();
+        editEventHandler();
+      }
+      function checkboxEventsHandler() {
         let checkboxes = document.querySelectorAll("input[type=checkbox]");
-        console.log(checkboxes);
+
         checkboxes.forEach((element) => {
           element.addEventListener("change", () => {
-            console.log(element.checked);
             let elementId = element.getAttribute("data-id");
-            console.log(elementId);
+
             toggle(elementId, element.checked);
+            if (element.checked) {
+              element.nextElementSibling.classList.add("line-through");
+            } else {
+              element.nextElementSibling.classList.remove("line-through");
+            }
           });
         });
       }
+
+      function trashEventHandler() {
+        let trash = document.querySelectorAll(".trash");
+        console.log(trash);
+        trash.forEach((element) => {
+          element.addEventListener("click", () => {
+            /// not working my logic🙃
+
+            if (element.checked) {
+              if (!confirm("Are you sure, you want to delete it")) {
+                return;
+              }
+            } else {
+              alert("please mark the item checked that you wish to delete");
+            }
+
+            let elementId = element.getAttribute("data-id");
+            console.log(element);
+            deleteTodo(elementId);
+          });
+        });
+      }
+      function deleteTodo(id) {
+        let todos = JSON.parse(localStorage.getItem("todos"));
+        let updatedTodos = todos.filter((todo) => {
+          if (todo.id !== id) {
+            return todo;
+          }
+        });
+        console.log(updatedTodos);
+        localStorage.setItem("todos", JSON.stringify(updatedTodos));
+        display();
+      }
+      //edit
+      // function editEventHandler() {
+      //   let edit = document.querySelectorAll(".edit");
+      //   edit.forEach((element) => {
+      //     element.addEventListener("click", () => {
+      //       console.log("edit done");
+      //       let elementId = element.getAttribute("data-id");
+      //       console.log(element);
+      //       editTodo(elementId);
+      //     });
+      //   });
+      // }
+
+      // function editTodo(id) {
+      //   let todos = JSON.parse(localStorage.getItem("todos"));
+      //   let updatedTodos = todos.filter((todo) => {});
+      //   console.log(updatedTodos);
+      //   localStorage.setItem("todos", JSON.stringify(updatedTodos));
+      //   display();
+      // }
+
+      // for display
       display();
       function toggle(id, status) {
         let todos = localStorage.getItem("todos");
@@ -115,6 +182,9 @@
         });
         localStorage.setItem("todos", JSON.stringify(updatedtodos));
       }
+
+      /// delete if task is checked if not alert to user to make it checked
+      // icon add for edit pencil
     </script>
   </body>
 </html>
