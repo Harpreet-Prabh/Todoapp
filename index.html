@@ -86,11 +86,15 @@
             todo.text
           }</span>
               </div>
-              <div><button class="edit" data-id="${
-                todo.id
-              }"><i class="fa-solid fa-pen-to-square" style="color: #685997;"></i></button> <button class="trash" data-id="${
+              <div>
+                <button class="edit" data-id="${
+                  todo.id
+                }"><i class="fa-solid fa-pen-to-square" style="color: #685997;"></i></button>
+              
+              <button class="trash" data-checked="${todo.completed}" data-id="${
             todo.id
-          }" ><i class="fa-solid fa-trash" style="color: #df2b0c"></i></button></div>
+          }" >
+                <i class="fa-solid fa-trash" style="color: #df2b0c"></i></button></div>
              
             </li>`;
         });
@@ -112,6 +116,7 @@
             } else {
               element.nextElementSibling.classList.remove("line-through");
             }
+            display();
           });
         });
       }
@@ -122,21 +127,23 @@
         trash.forEach((element) => {
           element.addEventListener("click", () => {
             /// not working my logic🙃
+            let elementId = element.getAttribute("data-id");
+            let isElementChecked = element.getAttribute("data-checked");
 
-            if (element.checked) {
+            if (isElementChecked == "true") {
               if (!confirm("Are you sure, you want to delete it")) {
                 return;
               }
+              deleteTodo(elementId);
             } else {
               alert("please mark the item checked that you wish to delete");
             }
 
-            let elementId = element.getAttribute("data-id");
             console.log(element);
-            deleteTodo(elementId);
           });
         });
       }
+
       function deleteTodo(id) {
         let todos = JSON.parse(localStorage.getItem("todos"));
         let updatedTodos = todos.filter((todo) => {
@@ -149,25 +156,32 @@
         display();
       }
       //edit
-      // function editEventHandler() {
-      //   let edit = document.querySelectorAll(".edit");
-      //   edit.forEach((element) => {
-      //     element.addEventListener("click", () => {
-      //       console.log("edit done");
-      //       let elementId = element.getAttribute("data-id");
-      //       console.log(element);
-      //       editTodo(elementId);
-      //     });
-      //   });
-      // }
+      function editEventHandler() {
+        let edit = document.querySelectorAll(".edit");
+        edit.forEach((element) => {
+          element.addEventListener("click", () => {
+            console.log("edit done");
+            let elementId = element.getAttribute("data-id");
+            console.log(element);
+            editTodo(elementId);
+          });
+        });
+      }
 
-      // function editTodo(id) {
-      //   let todos = JSON.parse(localStorage.getItem("todos"));
-      //   let updatedTodos = todos.filter((todo) => {});
-      //   console.log(updatedTodos);
-      //   localStorage.setItem("todos", JSON.stringify(updatedTodos));
-      //   display();
-      // }
+      function editTodo(id) {
+        let todos = JSON.parse(localStorage.getItem("todos"));
+        let editTodo = todos.find((todo) => todo.id == id);
+        let userInput = prompt("enter new value", editTodo.text);
+        console.log(editTodo, userInput);
+        let updatedTodos = todos.map((todo) => {
+          if (todo.id == id) {
+            return { ...todo, text: userInput };
+          }
+          return todo;
+        });
+        localStorage.setItem("todos", JSON.stringify(updatedTodos));
+        display();
+      }
 
       // for display
       display();
