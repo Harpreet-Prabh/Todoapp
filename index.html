@@ -66,15 +66,14 @@
         } else {
           todos = [todo];
         }
-        localStorage.setItem("todos", JSON.stringify(todos));
+        storage(todos);
 
         inputElement.value = "";
         display();
       }
 
       function display() {
-        let todos = localStorage.getItem("todos");
-        todos = JSON.parse(todos);
+        let todos = getStorageItem();
 
         let todosHtml = "";
         todos.forEach((todo) => {
@@ -145,14 +144,14 @@
       }
 
       function deleteTodo(id) {
-        let todos = JSON.parse(localStorage.getItem("todos"));
+        let todos = getStorageItem();
         let updatedTodos = todos.filter((todo) => {
           if (todo.id !== id) {
             return todo;
           }
         });
         console.log(updatedTodos);
-        localStorage.setItem("todos", JSON.stringify(updatedTodos));
+        storage(updatedTodos);
         display();
       }
       //edit
@@ -169,7 +168,7 @@
       }
 
       function editTodo(id) {
-        let todos = JSON.parse(localStorage.getItem("todos"));
+        let todos = getStorageItem();
         let editTodo = todos.find((todo) => todo.id == id);
         let userInput = prompt("enter new value", editTodo.text);
         console.log(editTodo, userInput);
@@ -179,24 +178,30 @@
           }
           return todo;
         });
-        localStorage.setItem("todos", JSON.stringify(updatedTodos));
+        storage(updatedTodos);
         display();
       }
 
       // for display
       display();
       function toggle(id, status) {
-        let todos = localStorage.getItem("todos");
-        todos = JSON.parse(todos);
+        let todos = getStorageItem();
         let updatedtodos = todos.map((todo) => {
           if (todo.id == id) {
             return { ...todo, completed: status }; ///use traverse
           }
           return todo;
         });
-        localStorage.setItem("todos", JSON.stringify(updatedtodos));
+        storage(updatedtodos);
       }
 
+      function storage(updatedTodos) {
+        localStorage.setItem("todos", JSON.stringify(updatedTodos));
+      }
+
+      function getStorageItem() {
+        return JSON.parse(localStorage.getItem("todos"));
+      }
       /// delete if task is checked if not alert to user to make it checked
       // icon add for edit pencil
     </script>
